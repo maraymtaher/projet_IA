@@ -1,25 +1,18 @@
-# ============================================================
-# algorithme.py — Algorithme Génétique VRP-TW
-# Projet IA2 : Optimisation Collecte de Lait
-# ENASTIC N'Djaména | Marayim Tahir
-# ============================================================
+
 import json, math, random
 import numpy as np
 
 random.seed(42)
 np.random.seed(42)
 
-# ============================================================
-# 1 — Charger les données
-# ============================================================
+#  Charger les données
 def charger_donnees():
     with open("eleveurs.json", "r", encoding="utf-8") as f:
         data = json.load(f)
     return data["depot"], data["eleveurs"], data["parametres"]
 
-# ============================================================
-# 2 — Distances GPS (Haversine)
-# ============================================================
+
+#  Distances GPS (Haversine)
 def haversine(p1, p2):
     R = 6371
     lat1, lat2 = math.radians(p1["lat"]), math.radians(p2["lat"])
@@ -38,9 +31,9 @@ def construire_matrice(depot, eleveurs):
                 matrice[i][j] = haversine(tous[i], tous[j])
     return matrice
 
-# ============================================================
-# 3 — Volumes prévisionnels (moyenne mobile 7 jours)
-# ============================================================
+
+#  Volumes prévisionnels (moyenne mobile 7 jours)
+
 def calculer_volumes(eleveurs):
     for e in eleveurs:
         base  = e["volume"]
@@ -52,9 +45,9 @@ def calculer_volumes(eleveurs):
         e["volume_prevu"] = round(float(np.mean(vols[-7:])), 1)
     return eleveurs
 
-# ============================================================
-# 4 — Évaluer un itinéraire
-# ============================================================
+
+#  Évaluer un itinéraire
+
 def evaluer(itineraire, depot, eleveurs, matrice, vitesse):
     heure     = depot["ouverture"]
     dist_tot  = 0
@@ -95,9 +88,7 @@ def evaluer(itineraire, depot, eleveurs, matrice, vitesse):
 
     return dist_tot + penal_tot, dist_tot, penal_tot, round(h_retour, 2), details
 
-# ============================================================
-# 5 — Algorithme Génétique
-# ============================================================
+#  Algorithme Génétique
 def creer_itineraire(eleveurs):
     ids = [e["id"] for e in eleveurs]
     random.shuffle(ids)
@@ -131,9 +122,7 @@ def mutation_swap(itin, taux=0.3):
         itin[i], itin[j] = itin[j], itin[i]
     return itin
 
-# ============================================================
-# 6 — Fonction principale appelée par Flask
-# ============================================================
+# Fonction principale appelée par Flask
 def optimiser():
     depot, eleveurs, params = charger_donnees()
     vitesse  = params["vitesse_moyenne"]
