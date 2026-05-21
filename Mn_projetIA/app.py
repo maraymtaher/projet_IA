@@ -1,8 +1,4 @@
-# ============================================================
-# app.py — Serveur Flask
-# Projet IA2 : Optimisation Collecte de Lait
-# ENASTIC N'Djaména | Marayim Tahir
-# ============================================================
+
 from flask import Flask, jsonify, render_template, request
 from algorithme import optimiser
 
